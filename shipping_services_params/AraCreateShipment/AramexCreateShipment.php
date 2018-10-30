@@ -17,11 +17,10 @@ class AramexCreateShipment
         foreach ($shipments as $shipment) {
             array_push($finalshipments, (Array) $shipment);
         }
-        $this->shipmentCreateRequest = array(
-            aramexCommonParams::getRequestCommonParams($transaction),
+        $this->shipmentCreateRequest = array_merge(aramexCommonParams::getRequestCommonParams($transaction), array(
             'Shipments' => $finalshipments,
             'LabelInfo' => (Array) $labelIfo,
-        );
+        ));
     }
 
     public function createShipment()

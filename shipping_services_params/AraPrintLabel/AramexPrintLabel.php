@@ -13,13 +13,12 @@ class AramexPrintLabel
 
     public function __construct(AramexTransaction $transaction, AramexShipmentLabelInfo $labelIfo, $shipmentNumber, $productGroup, $originEntity)
     {
-        $this->printLabelRequest = array(
-            aramexCommonParams::getRequestCommonParams($transaction),
+        $this->printLabelRequest = array_merge(aramexCommonParams::getRequestCommonParams($transaction), array(
             'ShipmentNumber' => $shipmentNumber,
             'ProductGroup' => $productGroup,
             'OriginEntity' => $originEntity,
             'LabelInfo' => (Array) $labelIfo,
-        );
+        ));
     }
 
     public function printLabel()

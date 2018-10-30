@@ -12,11 +12,10 @@ class AramexCancelPickup
 
     public function __construct(AramexTransaction $transaction, $PickupGUID, $Comments)
     {
-        $this->printLabelRequest = array(
-            aramexCommonParams::getRequestCommonParams($transaction),
+        $this->cancelPickupRequest = array_merge(aramexCommonParams::getRequestCommonParams($transaction), array(
             'PickupGUID' => $PickupGUID,
             'Comments'   => $Comments
-        );
+        ));
     }
 
     public function cancelPickup()

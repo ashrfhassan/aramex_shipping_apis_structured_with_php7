@@ -13,11 +13,10 @@ class AramexCreatePickup
 
     public function __construct(AramexTransaction $transaction, AramexShipmentLabelInfo $labelIfo, AramexPickup $pickup)
     {
-        $this->createPickupRequest = array(
-            aramexCommonParams::getRequestCommonParams($transaction),
+        $this->createPickupRequest = array_merge(aramexCommonParams::getRequestCommonParams($transaction), array(
             'Pickup' => (Array) $pickup,
             'LabelInfo' => (Array) $labelIfo,
-        );
+        ));
     }
 
     public function createPickup()
