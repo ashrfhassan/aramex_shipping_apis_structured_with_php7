@@ -3,8 +3,6 @@
 namespace App\aramex\shipping_services_params\AraCreateShipment;
 
 use App\aramex\shipping_services_params\data_types\AramexParty;
-use App\aramex\shipping_services_params\data_types\AramexShipper;
-use App\aramex\shipping_services_params\data_types\AramexShipmentDetails;
 
 class AramexShipment
 {

@@ -15,7 +15,7 @@ class AramexParty
         $this->Reference1 = $Reference1;
         $this->Reference2 = $Reference2;
         $this->AccountNumber = $AccountNumber;
-        $this->PartyAddress = $PartyAddress;
-        $this->Contact = $Contact;
+        $this->PartyAddress = (Array) $PartyAddress;
+        $this->Contact = (Array) $Contact;
     }
 }

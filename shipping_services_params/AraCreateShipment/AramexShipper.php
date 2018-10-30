@@ -2,6 +2,10 @@
 
 namespace App\aramex\shipping_services_params\AraCreateShipment;
 
+use App\aramex\shipping_services_params\data_types\AramexAddress;
+use App\aramex\shipping_services_params\data_types\AramexContact;
+
+
 class AramexShipper
 {
     public $Reference1;

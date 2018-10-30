@@ -2,6 +2,11 @@
 
 namespace App\aramex\shipping_services_params\AraCreateShipment;
 
+use App\aramex\shipping_services_params\data_types\AramexDimensions;
+use App\aramex\shipping_services_params\data_types\AramexWeight;
+use App\aramex\shipping_services_params\data_types\AramexMoney;
+
+
 class AramexShipmentDetails
 {
     
