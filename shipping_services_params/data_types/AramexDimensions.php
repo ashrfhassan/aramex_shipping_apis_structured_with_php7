@@ -5,14 +5,14 @@ namespace App\aramex\shipping_services_params\data_types;
 class AramexDimensions
 {
     public $Length;
-    public $Weight;
+    public $Width;
     public $Height;
     public $Unit;
 
-    function __construct($Length, $Weight, $Height, $Unit)
+    function __construct($Length, $Width, $Height, $Unit)
     {
         $this->Length = $Length;
-        $this->Weight = $Weight;
+        $this->Width = $Width;
         $this->Height = $Height;
         $this->Unit = $Unit;
     }
