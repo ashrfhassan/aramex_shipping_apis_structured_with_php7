@@ -24,11 +24,12 @@ class AramexPickup
     public $PickupItems;
     public $Status;
 
-    function __construct(AramexAddress $PickupAddress, AramexContact $PickupContact, $PickupLocation, $PickupDate, $ReadyTime, $LastPickupTime, $ClosingTime, $Comments, $Reference1, $Reference2, $Vehicle, $Status, Array $PickupItems, Array $Shipments)
+    function __construct(AramexAddress $PickupAddress, AramexContact $PickupContact, $PickupLocation, $PickupDate, $ReadyTime, $LastPickupTime, $ClosingTime, $Comments, $Reference1, $Reference2, $Vehicle, $Status, Array $PickupItems, Array $Shipments, Array $shipmentsAdditionalData)
     {
         $finalShipments = [];
-        foreach ($Shipments as $Shipment) {
-            array_push($finalShipments, (Array) $Shipment);
+        for ($i =0; $i < count($Shipments); $i++) {
+            $shipment = array_merge((Array) $Shipments[$i], (Array) $shipmentsAdditionalData[$i]);
+            $finalShipments['shipment'] =  $shipment;
         }
         $finalPickupItems = [];
         foreach ($PickupItems as $PickupItem) {

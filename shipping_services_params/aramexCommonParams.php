@@ -11,13 +11,13 @@ class aramexCommonParams
     {
         return array(
             'ClientInfo' => array(
-                'AccountCountryCode' => config('aramex.test.account_country_code'),
-                'AccountEntity' => config('aramex.test.account_entity'),
-                'AccountNumber' => config('aramex.test.account_number'),
-                'AccountPin' => config('aramex.test.account_pin'),
-                'UserName' => config('aramex.test.user_name'),
-                'Password' => config('aramex.test.password'),
-                'Version' => config('aramex.test.aramex_api_version'),
+                'AccountCountryCode' => config('aramex.account_country_code'),
+                'AccountEntity' => config('aramex.account_entity'),
+                'AccountNumber' => config('aramex.account_number'),
+                'AccountPin' => config('aramex.account_pin'),
+                'UserName' => config('aramex.user_name'),
+                'Password' => config('aramex.password'),
+                'Version' => config('aramex.aramex_api_version'),
             ),
             'Transaction' => (Array) $transaction,
         );
