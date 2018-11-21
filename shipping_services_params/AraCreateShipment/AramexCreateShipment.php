@@ -11,15 +11,11 @@ class AramexCreateShipment
 
     public $shipmentCreateRequest;
 
-    public function __construct(AramexTransaction $transaction, AramexShipmentLabelInfo $labelIfo, Array $shipments, Array $shipmentsAdditionalData)
+    public function __construct(AramexTransaction $transaction, AramexShipmentLabelInfo $labelIfo, AramexShipment $shipment, AramexShipmentAdditionalData $shipmentsAdditionalData)
     {
-        $finalshipments = [];
-        for ($i =0; $i < count($shipments); $i++) {
-            $shipment = array_merge((Array) $shipments[$i], (Array) $shipmentsAdditionalData[$i]);
-            $finalshipments['shipment'] =  $shipment;
-        }
+        $finalshipment['Shipment'] =  $shipment;
         $this->shipmentCreateRequest = array_merge(aramexCommonParams::getRequestCommonParams($transaction), array(
-            'Shipments' => $finalshipments,
+            'Shipments' => $finalshipment,
             'LabelInfo' => (Array) $labelIfo,
         ));
     }
