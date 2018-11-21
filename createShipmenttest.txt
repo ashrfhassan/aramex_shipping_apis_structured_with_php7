@@ -1,5 +1,7 @@
         // aramex
-        $city = $request->get('address_line_one');
+        $address1 = $request->get('address_line_one');
+        $address2 = $request->get('address_line_two');
+        $city     = Region::find($request->get('city_id'))->name_en;
         $postCode = $request->get('postcode');
         $personName = $request->get('first_name'). " " . $request->get('last_name');
         $companyName = $request->get('company_name');
@@ -7,28 +9,29 @@
         $note = $request->get('note');
         $transaction = new AramexTransaction('r1', 'r2', 'r3', 'r4', '5');
         $labelInfo = new AramexShipmentLabelInfo(9201, 'URL');
-        $pickupAddress = new AramexAddress('l1', 'l2', 'l3', $city, '', $postCode, 'SA');
+        $pickupAddress = new AramexAddress($address1, $address2, 'l3', $city, '', $postCode, 'SA');
         $contact = new AramexContact('', $personName, '', $companyName, $phone, '125', '', '', '', $phone, Auth::user()->email, '');
         $pickupItems = [];
         $totalPrice = 0;
         $totalCount = 0;
         $products->each(function($product) use (&$pickupItems, &$totalPrice, &$totalCount)  {
             $wieght = new AramexWeight('kg', 0.5);
-            $pickupItem = new AramexPickupItemDetail('', $wieght, 1, $product->description, "r1");
+            $pickupItem = new AramexPickupItemDetail('', $wieght, 1, $product->description,  $product->id);
             $pickupItems[] = $pickupItem;
             $totalPrice += $product->price;
             $totalCount += $product->count;
         });
-        $partyAddress = new AramexAddress('l1', 'l2', 'l3', $city, '', $postCode, 'SA');
-        $shipper = new AramexShipper('r1', 'r2', config('aramex.account_number'), $partyAddress, $contact);
+        $partyAddress = new AramexAddress($address1, $address2, 'l3', $city, '', $postCode, 'SA');
+        $shipper = new AramexShipper($address1, $address2, config('aramex.account_number'), $partyAddress, $contact);
         $party = new AramexParty('r1', 'r2', '', $partyAddress, $contact);
         $wieghtShipment = new AramexWeight('kg', 0.5);
         $cashAmountShipment = new AramexMoney('SAR', $totalPrice);
-        $dimenstionsShipment = new AramexDimensions(100, 100, 100, 'cm');
-        $shipmentDetails = new AramexShipmentDetails($dimenstionsShipment, $wieghtShipment, $cashAmountShipment, $cashAmountShipment, $cashAmountShipment, $cashAmountShipment, $cashAmountShipment, $pickupItems);
+        $emptyCashAmountShipment = new AramexMoney('SAR', 0);
+        $dimenstionsShipment = new AramexDimensions(200, 200, 200, 'cm');
+        $shipmentDetails = new AramexShipmentDetails($dimenstionsShipment, $wieghtShipment, $cashAmountShipment, $emptyCashAmountShipment, $emptyCashAmountShipment, $emptyCashAmountShipment, $emptyCashAmountShipment, $pickupItems);
         $shipmentAdditionalDetails = new AramexShipmentAdditionalDetails('DOM', 'ONP', 'P', '', 'CODS', $totalCount, $note, 'SA');
         $shipment = new AramexShipment($shipper, $shipper, $party, $shipmentDetails, $shipmentAdditionalDetails);
-        $shipmentAdditionalData = new AramexShipmentAdditionalData('r1', 'r2', 'r3', time(), 0, time(), time(), 'Street', '', '', '', '');
+        $shipmentAdditionalData = new AramexShipmentAdditionalData($address2, 'r2', 'r3', time(), 0, time(), time(), $address1, '', '', '', '');
         $params = (new AramexCreateShipment($transaction, $labelInfo, $shipment, $shipmentAdditionalData))->createShipment();
         $soap = new soapOperations(config('aramex.wsdl_path'));
         $res = $soap->callSoapFunction( "CreateShipments", $params);
