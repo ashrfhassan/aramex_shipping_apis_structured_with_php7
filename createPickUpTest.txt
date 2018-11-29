@@ -1,6 +1,6 @@
         // aramex
-        $dateTimeNow = Carbon::now()->format('Y-m-d H:m:s');
-        $dateTimeAfterTwoDays = Carbon::now()->addDays(2)->format('Y-m-d H:m:s');
+        $dateTimeNow = Carbon::now()->addDays(2)->timestamp;
+        $dateTimeAfterTwoDays = Carbon::now()->addDays(4)->timestamp;
         $address1 = $request->get('address_line_one');
         $address2 = $request->get('address_line_two');
         $city = Region::find($request->get('city_id'))->name_en;
@@ -13,8 +13,8 @@
         $email = (Auth::check()) ? Auth::user()->email : 'guest@healthyu.com';
         $transaction = new AramexTransaction('r1', 'r2', 'r3', 'r4', 'r5');
         $labelInfo = new AramexShipmentLabelInfo(9201, 'URL');
-        $contactShipper = new AramexContact('', 'healthy-green', '', 'healthy-green', '0530926368', '125', '', '', '', '0530926368', ' info@healthyuksa.com', '');
-        $contact = new AramexContact('', $personName, '', $companyName, $phone, '125', '', '', '', $phone, $email, '');
+        $contactShipper = new AramexContact('', 'healthy-green', '', 'healthy-green', '0530926368', '', '0530926368', '', '', '0530926368', ' info@healthyuksa.com', '');
+        $contact = new AramexContact('', $personName, '', $companyName, $phone, '0530926368', '', '0530926368', '', $phone, $email, '');
         $pickupItems = [];
         $totalPrice = 0;
         $totalCount = 0;
@@ -39,10 +39,17 @@
         $cashAmountShipment = new AramexMoney('SAR', $totalPrice);
         $emptyCashAmountShipment = new AramexMoney('SAR', 0);
         $dimenstionsShipment = new AramexDimensions(100, 100, 100, 'cm');
-        $shipmentAdditionalDetails = new AramexShipmentAdditionalDetails('DOM', 'ONP', 'P', '', 'CODS', $totalCount, $note, 'SA');
+        $shipmentAdditionalDetails = new AramexShipmentAdditionalDetails('EXP', 'ONP', 'P', '', 'CODS', $totalCount, $note, 'SA');
         $shipmentDetails = new AramexShipmentDetails($dimenstionsShipment, $wieghtShipment, $cashAmountShipment, $emptyCashAmountShipment, $emptyCashAmountShipment, $emptyCashAmountShipment, $emptyCashAmountShipment, $pickupItems);
         $shipment = new AramexShipment($shipper, $consignee, $party, $shipmentDetails, $shipmentAdditionalDetails);
-        $shipmentAdditionalData = new AramexShipmentAdditionalData($address1, $address2, 'r3', time(), 0, time(), time(), 'Street', '', '', '', '');
+        $shipmentAdditionalData = new AramexShipmentAdditionalData($address1, $address2, 'r3', $dateTimeNow, 0, $dateTimeNow, $dateTimeNow, 'Street', '', '', '', '');
         $pickup = new AramexPickup($partyAddressShipper, $contactShipper, 'Al-Rawdah Street, Al-Rawdah District, Al-Wateen Centre, Second Floor, Office #7', $dateTimeNow, $dateTimeNow, $dateTimeNow, $dateTimeAfterTwoDays, $note, 'r1', 'r2', '', ' Ready', $pickupItems, $shipment, $shipmentAdditionalData);
         $params = (new AramexCreatePickup($transaction, $labelInfo, $pickup))->createPickup();
-        // end aramex
+        // calc distance coast
+        $soapCalc = new soapOperations(config('aramex.wsdl_calc_path'));
+        $calcRate = new AramexCalcRate($transaction, $partyAddressShipper, $partyAddress, $shipmentAdditionalDetails, $wieghtShipment, $wieghtShipment, $totalCount);
+        $calcParams = $calcRate->calcRate();
+        // end calc distance coast
+        $res = $soapCalc->callSoapFunction("CalculateRate", $calcParams);
+        $soap = new soapOperations(config('aramex.wsdl_path'));
+        $res = $soap->callSoapFunction("CreatePickup", $params);
