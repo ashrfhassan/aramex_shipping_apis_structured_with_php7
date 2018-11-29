@@ -5,6 +5,7 @@ namespace App\aramex\shipping_services_params\AraCreatePickup;
 use App\aramex\shipping_services_params\data_types\AramexAddress;
 use App\aramex\shipping_services_params\data_types\AramexContact;
 use App\aramex\shipping_services_params\AraCreateShipment\AramexShipment;
+use App\aramex\shipping_services_params\AraCreateShipment\AramexShipmentAdditionalData;
 
 
 class AramexPickup
@@ -24,13 +25,9 @@ class AramexPickup
     public $PickupItems;
     public $Status;
 
-    function __construct(AramexAddress $PickupAddress, AramexContact $PickupContact, $PickupLocation, $PickupDate, $ReadyTime, $LastPickupTime, $ClosingTime, $Comments, $Reference1, $Reference2, $Vehicle, $Status, Array $PickupItems, Array $Shipments, Array $shipmentsAdditionalData)
+    function __construct(AramexAddress $PickupAddress, AramexContact $PickupContact, $PickupLocation, $PickupDate, $ReadyTime, $LastPickupTime, $ClosingTime, $Comments, $Reference1, $Reference2, $Vehicle, $Status, Array $PickupItems, AramexShipment $Shipment, AramexShipmentAdditionalData $shipmentsAdditionalData)
     {
-        $finalShipments = [];
-        for ($i =0; $i < count($Shipments); $i++) {
-            $shipment = array_merge((Array) $Shipments[$i], (Array) $shipmentsAdditionalData[$i]);
-            $finalShipments['shipment'] =  $shipment;
-        }
+        $finalShipment['Shipment'] =  array_merge((Array) $Shipment, (Array) $shipmentsAdditionalData);
         $finalPickupItems = [];
         foreach ($PickupItems as $PickupItem) {
             array_push($finalPickupItems, (Array) $PickupItem);
@@ -46,7 +43,7 @@ class AramexPickup
        $this->Reference1 = $Reference1;
        $this->Reference2 = $Reference2;
        $this->Vehicle = $Vehicle;
-       $this->Shipments = $finalShipments;
+       $this->Shipments = $finalShipment;
        $this->PickupItems = $finalPickupItems;
        $this->Status = $Status;
     }
